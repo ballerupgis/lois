@@ -1,15 +1,15 @@
 <template>
   <div id="app">
-    <nav class="navbar navbar-light bg-faded">
-      <h1 class="navbar-brand mb-0">LOIS STAT API</h1>
-    </nav>
+    <navbar v-bind:report="report" v-bind:showToc="showToc"></navbar>
     <div class="container">
       <div id="mapid"></div>
       <button  type="button" class="btn btn-secondary btn-lg btn-block" v-on:click="createReport(geometry)">
         <span v-show="!loading">HENT RAPPORT</span>
         <i class="fa fa-refresh fa-spin" style="font-size:24px" v-show="loading"></i>
       </button>
-      <div class="row"></div>
+      <a href="#" id="pdf" v-on:click="pdf" v-show="showToc">
+        <i class="fa fa-file-pdf-o fa-2x bottom-right"></i>
+      </a>
         <div id="report">
           <div class="jumbotron" v-bind:id="item.SheetName" v-for="item in report">
             <h1>{{item.SheetName.split('_').join(' - ')}}</h1>
@@ -39,25 +39,30 @@
             </table>
           </div>
         </div>
-      </div>
     </div>
-  </div>
+  </div> 
 </template>
 
 <script>
 import axios from 'axios'
 import L from 'leaflet'
 import Draw from 'leaflet-draw'
+import Navbar from './components/Navbar.vue'
+import jsPDF from 'jspdf'
 
 export default {
   name: 'app',
+  components: {
+    'navbar': Navbar
+  },
   data () {
     return {
       report: {},
       data: {},
       geometry: {},
       map: {},
-      loading: false
+      loading: false,
+      showToc: false
     }
   },
   methods: {
@@ -66,14 +71,14 @@ export default {
       let self = this;
       axios.post('http://bal0-lois:8080/api/datapakkeresultat?procedureID=3&procedureParametre=%7B%22UdStraekID%22%3A%221%22%2C%22LS2RapportID%22%3A%223%22%7D', geom)
         .then(function (response) {
-          self.loading = false
-          self.report = response.data.Result
-          console.log(self.report)
-          self.data = self.beutifyResponse(self.report)
+          self.loading = false;
+          self.showToc = true;
+          self.report = response.data.Result;
+          self.data = self.beutifyResponse(self.report);
         })
         .catch(function (error) {
-          self.loading = false
-          alert('Kunne ikke få fat i data')
+          self.loading = false;
+          alert('Kunne ikke få fat i data');
           console.info(error);
         });
     },
@@ -131,8 +136,35 @@ export default {
       if (Object.keys(this.geometry).length === 0 && this.geometry.constructor === Object) {
         alert('Du mangler at tegne et område på kortet')
       } else {
-        this.getData(geom)
+        //remove existing report
+        this.report = {};
+        //request report with drawn 
+        this.getData(geom);
       }
+    },
+    pdf: function() {
+      var doc = new jsPDF();
+
+     // We'll make our own renderer to skip this editor
+      var specialElementHandlers = {
+        '#editor': function(element, renderer){
+          return true;
+        },
+        '.controls': function(element, renderer){
+          return true;
+        }
+      };
+
+      // All units are in the set measurement for the document
+      // This can be changed to "pt" (points), "mm" (Default), "cm", "in"
+      doc.fromHTML($('#report').get(0), 15, 15, {
+        'width': 170, 
+        'elementHandlers': specialElementHandlers
+      });
+
+      doc.save('lois_raport.pdf')
+      console.log(doc)
+
     }
   },
   mounted: function () {
@@ -187,6 +219,7 @@ export default {
 
       let self = this
       this.map.on('draw:created', function(e) {
+
         let type = e.layerType,
             layer = e.layer,
             crs = {
@@ -201,12 +234,11 @@ export default {
         self.geometry = shape;
         // add crs def to geojson
         self.geometry.crs = crs;
-        
+        drawnItems.removeLayer(layer);
         drawnItems.addLayer(layer);
       });
 
-      this.map.on('draw:edited', function() {
-        //STORE CHANGES IN DATA PROP
+      this.map.on('draw:edited', function(e) {
       });
 
       this.map.on('draw:deleted', function() {
@@ -230,6 +262,7 @@ export default {
 
 
   #mapid {
+    margin-top: 55px;
     height: 500px;
   }
 
@@ -241,9 +274,10 @@ export default {
     background: #f7f7f7;
   }
 
-  .navbar-brand { 
-    margin-left: auto; 
-    margin-right: auto; 
+  .bottom-right {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    color: gray;
   }
-
 </style>
