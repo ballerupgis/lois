@@ -11,8 +11,8 @@
         <i class="fa fa-file-pdf-o fa-2x bottom-right"></i>
       </a>
         <div id="report">
-          <div class="jumbotron" v-bind:id="item.SheetName" v-for="item in report">
-            <h1>{{item.SheetName.split('_').join(' - ')}}</h1>
+          <div class="jumbotron" v-bind:id="item.title" v-for="item in data">
+            <h1>{{item.title.split('_').join(' ')}}</h1>
             <table class="table table-striped table-sm">
               <thead>
                 <tr>
@@ -21,8 +21,25 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(val, key) in item.Table[0]">
-                  <td v-if="key.split('_')[0] == 'Pct'">{{key.split('_').slice(1, key.split('_').length).join(' ')}} (%)</td>
+                <tr v-for="item in item.data">  
+                  <td>{{item.variable}}</td>
+                  <td>
+                    <div v-for="(value,key) in item.values">
+                      <div v-if="key === 'AntalNiveau'">
+                        {{key}}: {{value}}
+                      </div>
+                      <div v-if="key === 'AntalKom'">
+                        {{key}}: {{value}}
+                      </div>                      
+                      <div class="progress" v-if="key === 'PctNiveau'">
+                        <div class="progress-bar bg-success" role="progressbar" v-bind:style="{width: value + '%'}" v-bind:aria-valuenow="value" aria-valuemin="0" aria-valuemax="100">Niveau: {{value}} %</div>
+                      </div>
+                      <div class="progress" v-if="key === 'PctKom'">
+                        <div class="progress-bar bg-warning" role="progressbar" v-bind:style="{width: value + '%'}" v-bind:aria-valuenow="value" aria-valuemin="0" aria-valuemax="100">Kommune: {{value}} %</div>
+                      </div>
+                    </div>
+                  </td>
+                  <!-- <td v-if="key.split('_')[0] == 'Pct'">{{key.split('_').slice(1, key.split('_').length).join(' ')}} (%)</td>
                   <td v-else-if="key.split('_')[0] == 'Antal'">{{key.split('_').slice(1, key.split('_').length).join(' ')}} (antal)</td>
                   <td v-else>{{key}}</td>
                   <td v-if="key.split('_')[0] == 'Pct'">
@@ -33,7 +50,7 @@
                       <div class="progress-bar bg-warning" role="progressbar" v-bind:style="{width: val + '%'}" v-bind:aria-valuenow="val" aria-valuemin="0" aria-valuemax="100">{{val}} %</div>
                     </div>
                   </td>
-                  <td v-else>{{val}}</td>
+                  <td v-else>{{val}}</td> -->
                 </tr>
               </tbody>
             </table>
@@ -74,6 +91,7 @@ export default {
           self.loading = false;
           self.showToc = true;
           self.report = response.data.Result;
+          //console.log(self.report)
           self.data = self.beutifyResponse(self.report);
         })
         .catch(function (error) {
@@ -82,54 +100,58 @@ export default {
           console.info(error);
         });
     },
-    beutifyResponse: function (res) {
-      let arr = []
-      res.forEach(function(item) {
-        //datamodel
-        let obj = {
-          sheetname: '',
-          variables: []
-        };
-        obj.sheetname = item.SheetName
-        let table = item.Table[0];
-        //console.log(table)
-        for(var key in table) {
-          let variables = {
-            title: '',
-            values: {}
-          };
-          //console.log(key)
-          let titleArr = key.split('_');
+    beutifyResponse: function(data) {
 
-          if(variables.title in obj.variables) {
-            console.log('findes')
-          }
-          //extract title from key
-          variables.title = titleArr.slice(1, titleArr.length - 1).join(' ');             
-          //count or pct keyword 
-          let valuetype = titleArr[0] + titleArr[titleArr.length-1];
-          switch (valuetype) {
-            case 'AntalNiveau':
-              variables.values.AntalNiveau = table[key];
-              break;
-            case 'PctNiveau':
-              variables.values.PctNiveau = table[key];
-              break;
-            case 'AntalKom':
-              variables.values.AntalKom = table[key];
-              break;
-            case 'PctKom':
-              variables.values.PctKom = table[key];
-              break;              
-            default:
-              break;
-          }
-          obj.variables.push(variables)
-          //console.log(variables)
-        }
-        arr.push(obj);
-      });
-      return arr;
+        let tables = [];
+        
+        data.forEach(function(element) {
+            let title = element.SheetName;
+            let table = element.Table[0];
+            let dataArr = [];
+            let excist = [];
+
+
+            for (var key in table) {
+                let variable = key.split('_').slice(1, key.split('_').length - 1).join(' ');
+                let valueKey = key.split('_')[0] + key.split('_')[key.split('_').length-1];
+
+                let datamodel = {
+                    variable: '',
+                    values: {
+                        AntalKom: '',
+                        AntalNiveau:'',
+                        PctKom: '',
+                        PctNiveau: ''
+                    }
+                }
+                
+                //check if variable already exicts
+                if (excist.indexOf(variable) === -1) {
+                    excist.push(variable);
+                    datamodel.variable = variable;
+                    datamodel.values[valueKey] = table[key];
+                    dataArr.push(datamodel);
+                } else {
+                    dataArr.forEach(function(item){
+                        for (var k in item) {
+                            if (item[k] == variable) {
+                                item.values[valueKey] = table[key];
+                                break;
+                            }
+                        }
+                    })
+                }
+
+            }
+
+            let obj = {
+                title: title,
+                data: dataArr
+            }
+            tables.push(obj);
+        }); 
+
+      return tables;
     },
     createReport: function (geom) {
       //Check if polygon is drawn
