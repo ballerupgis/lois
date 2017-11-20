@@ -11,7 +11,7 @@
         <i class="fa fa-file-pdf-o fa-2x bottom-right"></i>
       </a>
         <div id="report">
-          <div class="jumbotron" v-bind:id="item.title" v-for="item in data">
+          <div class="jumbotron" v-bind:id="item.title" v-for="item in data" v-show="item.title !== 'TotalKom' && item.title !== 'TotalNiveau'">
             <h1>{{item.title.split('_').join(' ')}}</h1>
             <table class="table table-striped table-sm">
               <thead>
@@ -22,35 +22,30 @@
               </thead>
               <tbody>
                 <tr v-for="item in item.data">  
-                  <td>{{item.variable}}</td>
+                  <td v-if="item.variable === ''">Samlet</td>
+                  <td v-else>{{item.variable}}</td>                  
                   <td>
                     <div v-for="(value,key) in item.values">
-                      <div v-if="key === 'AntalNiveau'">
+                      <div v-if="key === 'AntalNiveau' && value !== ''">
                         {{key}}: {{value}}
                       </div>
-                      <div v-if="key === 'AntalKom'">
+                      <div v-else-if="key === 'AntalKom' && value !== ''">
                         {{key}}: {{value}}
                       </div>                      
-                      <div class="progress" v-if="key === 'PctNiveau'">
+                      <div class="progress" v-else-if="key === 'PctNiveau' && value !== ''">
                         <div class="progress-bar bg-success" role="progressbar" v-bind:style="{width: value + '%'}" v-bind:aria-valuenow="value" aria-valuemin="0" aria-valuemax="100">Niveau: {{value}} %</div>
                       </div>
-                      <div class="progress" v-if="key === 'PctKom'">
+                      <div class="progress" v-else-if="key === 'PctKom' &&  value !== ''">
                         <div class="progress-bar bg-warning" role="progressbar" v-bind:style="{width: value + '%'}" v-bind:aria-valuenow="value" aria-valuemin="0" aria-valuemax="100">Kommune: {{value}} %</div>
+                      </div>
+                      <div v-else-if="key === 'TotalKom'">
+                        {{key}}: {{value}}
+                      </div>
+                      <div v-else-if="key === 'TotalNiveau'">
+                        {{key}}: {{value}}
                       </div>
                     </div>
                   </td>
-                  <!-- <td v-if="key.split('_')[0] == 'Pct'">{{key.split('_').slice(1, key.split('_').length).join(' ')}} (%)</td>
-                  <td v-else-if="key.split('_')[0] == 'Antal'">{{key.split('_').slice(1, key.split('_').length).join(' ')}} (antal)</td>
-                  <td v-else>{{key}}</td>
-                  <td v-if="key.split('_')[0] == 'Pct'">
-                    <div class="progress" v-if="key.split('_')[key.split('_').length-1] == 'Niveau'">
-                      <div class="progress-bar bg-success" role="progressbar" v-bind:style="{width: val + '%'}" v-bind:aria-valuenow="val" aria-valuemin="0" aria-valuemax="100">{{val}} %</div>
-                    </div>
-                    <div class="progress" v-if="key.split('_')[key.split('_').length-1] == 'Kom'">
-                      <div class="progress-bar bg-warning" role="progressbar" v-bind:style="{width: val + '%'}" v-bind:aria-valuenow="val" aria-valuemin="0" aria-valuemax="100">{{val}} %</div>
-                    </div>
-                  </td>
-                  <td v-else>{{val}}</td> -->
                 </tr>
               </tbody>
             </table>
@@ -118,10 +113,10 @@ export default {
                 let datamodel = {
                     variable: '',
                     values: {
-                        AntalKom: '',
                         AntalNiveau:'',
-                        PctKom: '',
-                        PctNiveau: ''
+                        AntalKom: '',
+                        PctNiveau: '',
+                        PctKom: ''
                     }
                 }
                 
@@ -185,7 +180,6 @@ export default {
       });
 
       doc.save('lois_raport.pdf')
-      console.log(doc)
 
     }
   },
@@ -292,8 +286,21 @@ export default {
     padding-top: 30px;
   }
 
+  .table td, .table th {
+    vertical-align: middle;
+  }
+
   .jumbotron {
     background: #f7f7f7;
+  }
+
+  .progress-bar {
+    white-space: nowrap;
+    height: 1.5rem;
+    line-height: 1.5rem;
+    vertical-align: middle;
+    font-size: 0.85rem;
+    color: black;
   }
 
   .bottom-right {
