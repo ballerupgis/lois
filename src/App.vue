@@ -11,8 +11,8 @@
         <i class="fa fa-file-pdf-o fa-2x bottom-right"></i>
       </a>
         <div id="report">
-          <div class="jumbotron" v-bind:id="item.title" v-for="item in data" v-show="item.title !== 'TotalKom' && item.title !== 'TotalNiveau'">
-            <h1>{{item.title.split('_').join(' ')}}</h1>
+          <div class="jumbotron" v-bind:id="item.tablename" v-for="item in data" v-show="item.tablename !== 'TotalKom' && item.tablename !== 'TotalNiveau'">
+            <h1>{{item.title}}</h1>
             <h5>{{item.desciption}}</h5>
             <div class="col-md-12">
               <table class="table table-striped table-sm table-hover">
@@ -104,6 +104,7 @@ export default {
       data.forEach(function(element) {
           let title = element.Meta.LangtNavn;
           let desciption = element.Meta.Beskrivelse;
+          let tablename = element.Meta.SheetName;
           let table = element.Table[0];
           let dataArr = [];
           let excist = [];
@@ -154,6 +155,7 @@ export default {
           // collect the beautified data and push to array
           let obj = {
               title: title,
+              tablename: tablename,
               desciption: desciption,
               data: dataArr
           }

@@ -12,7 +12,7 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                 <a class="dropdown-item" href="#" v-scroll-to="'#mapid'"><i class="fa fa-map-marker" aria-hidden="true"></i> Kort</a>
-                <a class="dropdown-item" href="#" v-for="item in report" v-show="item.SheetName !== 'TotalNiveau' && item.SheetName !=='TotalKom'" v-scroll-to="'#' + item.SheetName">{{item.SheetName.split('_').join(' - ')}}</a>
+                <a class="dropdown-item" href="#" v-for="item in report" v-show="item.Meta.SheetName !== 'TotalNiveau' && item.Meta.SheetName !=='TotalKom'" v-scroll-to="'#' + item.Meta.SheetName">{{item.Meta.LangtNavn}}</a>
             </div>
           </li>
         </ul>
