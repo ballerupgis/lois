@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <navbar v-bind:report="report" v-bind:showToc="showToc"></navbar>
+    <navbar v-bind:data="data" v-bind:showToc="showToc"></navbar>
     <div class="container">
       <div id="mapid"></div>
       <button  type="button" class="btn btn-secondary btn-lg btn-block" v-on:click="createReport(geometry)">
