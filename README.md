@@ -1,6 +1,7 @@
-# loisstat
+# Mit Hood
+Simpel webapp til at lave socioøkonomiske rapporter for et område som tegnes på et kort. Oplysninger i rapporten er blandt andet boligtype og -størrelse, alderfordeling, familietyper, virksomheder, statsborgerskab osv. 
 
-> A Vue.js project
+![image](https://user-images.githubusercontent.com/7534153/33887867-88cf99d6-df4b-11e7-9773-f07d86968d1b.png)
 
 ## Build Setup
 

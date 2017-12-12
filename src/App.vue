@@ -13,43 +13,45 @@
         <div id="report">
           <div class="jumbotron" v-bind:id="item.title" v-for="item in data" v-show="item.title !== 'TotalKom' && item.title !== 'TotalNiveau'">
             <h1>{{item.title.split('_').join(' ')}}</h1>
-            <h4>{{item.desciption}}</h4>
-            <table class="table table-striped table-sm">
-              <thead>
-                <tr>
-                  <td><strong>VARIABEL</strong></td>
-                  <td><strong>VÆRDI</strong></td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="item in item.data">  
-                  <td v-if="item.variable === ''">Samlet</td>
-                  <td v-else>{{item.variable}}</td>                  
-                  <td>
-                    <div v-for="(value,key) in item.values">
-                      <div v-if="key === 'AntalNiveau' && value !== ''">
-                        {{key}}: {{value}}
+            <h5>{{item.desciption}}</h5>
+            <div class="col-md-12">
+              <table class="table table-striped table-sm table-hover">
+                <thead>
+                  <tr class="row">
+                    <td class="col-md-4"><strong>VARIABEL</strong></td>
+                    <td class="col-md-8"><strong>VÆRDIER</strong></td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="row" v-for="item in item.data">  
+                    <td class="col-md-4" v-if="item.variable === ''">Samlet</td>
+                    <td class="col-md-4 align-middle" v-else>{{item.variable}}</td>                  
+                    <td class="col-md-8">
+                      <div v-for="(value,key) in item.values">
+                        <div v-if="key === 'AntalNiveau' && value !== ''">
+                          {{key}}: {{value}}
+                        </div>
+                        <div v-else-if="key === 'AntalKom' && value !== ''">
+                          {{key}}: {{value}}
+                        </div>                      
+                        <div class="progress" v-else-if="key === 'PctNiveau' && value !== ''">
+                          <div class="progress-bar bg-success" role="progressbar" v-bind:style="{width: value + '%'}" v-bind:aria-valuenow="value" aria-valuemin="0" aria-valuemax="100">Niveau: {{value}} %</div>
+                        </div>
+                        <div class="progress" v-else-if="key === 'PctKom' &&  value !== ''">
+                          <div class="progress-bar bg-warning" role="progressbar" v-bind:style="{width: value + '%'}" v-bind:aria-valuenow="value" aria-valuemin="0" aria-valuemax="100">Kommune: {{value}} %</div>
+                        </div>
+                        <div v-else-if="key === 'TotalKom'">
+                          {{key}}: {{value}}
+                        </div>
+                        <div v-else-if="key === 'TotalNiveau'">
+                          {{key}}: {{value}}
+                        </div>
                       </div>
-                      <div v-else-if="key === 'AntalKom' && value !== ''">
-                        {{key}}: {{value}}
-                      </div>                      
-                      <div class="progress" v-else-if="key === 'PctNiveau' && value !== ''">
-                        <div class="progress-bar bg-success" role="progressbar" v-bind:style="{width: value + '%'}" v-bind:aria-valuenow="value" aria-valuemin="0" aria-valuemax="100">Niveau: {{value}} %</div>
-                      </div>
-                      <div class="progress" v-else-if="key === 'PctKom' &&  value !== ''">
-                        <div class="progress-bar bg-warning" role="progressbar" v-bind:style="{width: value + '%'}" v-bind:aria-valuenow="value" aria-valuemin="0" aria-valuemax="100">Kommune: {{value}} %</div>
-                      </div>
-                      <div v-else-if="key === 'TotalKom'">
-                        {{key}}: {{value}}
-                      </div>
-                      <div v-else-if="key === 'TotalNiveau'">
-                        {{key}}: {{value}}
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
     </div>
@@ -100,9 +102,9 @@ export default {
       let tables = [];
       
       data.forEach(function(element) {
-          let title = element.SheetName;
+          let title = element.Meta.LangtNavn;
+          let desciption = element.Meta.Beskrivelse;
           let table = element.Table[0];
-          let desciption = 'Her kommer en beskrivelse';
           let dataArr = [];
           let excist = [];
 
@@ -289,7 +291,6 @@ export default {
     font-family: 'Quicksand', sans-serif;
   }
 
-
   #mapid {
     margin-top: 55px;
     height: 500px;
@@ -299,8 +300,8 @@ export default {
     padding-top: 30px;
   }
 
-  .table td, .table th {
-    vertical-align: middle;
+  .table{
+    margin-top: 3rem;
   }
 
   .jumbotron {
