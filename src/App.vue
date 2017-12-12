@@ -13,6 +13,7 @@
         <div id="report">
           <div class="jumbotron" v-bind:id="item.title" v-for="item in data" v-show="item.title !== 'TotalKom' && item.title !== 'TotalNiveau'">
             <h1>{{item.title.split('_').join(' ')}}</h1>
+            <h4>{{item.desciption}}</h4>
             <table class="table table-striped table-sm">
               <thead>
                 <tr>
@@ -81,7 +82,7 @@ export default {
     getData: function (geom) {
       this.loading = true
       let self = this;
-      axios.post('http://bal0-lois:8080/api/datapakkeresultat?procedureID=3&procedureParametre=%7B%22UdStraekID%22%3A%221%22%2C%22LS2RapportID%22%3A%223%22%7D', geom)
+      axios.post('http://bal0-lois:8080/api/datapakkeresultat?procedureID=3&procedureParametre=%7B%22UdStraekID%22%3A%221%22%2C%22LS2RapportID%22%3A%223%22%7D&type=json', geom)
         .then(function (response) {
           self.loading = false;
           self.showToc = true;
@@ -96,55 +97,66 @@ export default {
         });
     },
     beutifyResponse: function(data) {
+      let tables = [];
+      
+      data.forEach(function(element) {
+          let title = element.SheetName;
+          let table = element.Table[0];
+          let desciption = 'Her kommer en beskrivelse';
+          let dataArr = [];
+          let excist = [];
 
-        let tables = [];
-        
-        data.forEach(function(element) {
-            let title = element.SheetName;
-            let table = element.Table[0];
-            let dataArr = [];
-            let excist = [];
+          //iteratring through columnnames and adding key/value to datamodel
+          for (var key in table) {
+              let variable, valueKey;
+              if (key.split(' ')[key.split(' ').length-1] == 'Niveau' ) {
+                  // remove prefix and suffix (antal/pct niveau)
+                  variable = key.split(' ').slice(1, key.split(' ').length - 1).join(' ');
+                  // set value key dependent on antal/pct niveau
+                  valueKey = key.split(' ')[0] + key.split(' ')[key.split(' ').length-1];
+              } else {
+                  variable = key.split(' ').slice(1, key.split(' ').length).join(' ');
+                  valueKey = key.split(' ')[0] + 'Kom';
+              }
+                  
+              let datamodel = {
+                  variable: '',
+                  values: {
+                      AntalNiveau:'',
+                      AntalKom: '',
+                      PctNiveau: '',
+                      PctKom: ''
+                  }
+              }
+              
+              //check if variable already exicts
+              if (excist.indexOf(variable) === -1) {
+                  excist.push(variable);
+                  datamodel.variable = variable;
+                  datamodel.values[valueKey] = table[key];
+                  dataArr.push(datamodel);
+              } else {
+                  // setting valuekeys to value
+                  dataArr.forEach(function(item){
+                      for (var k in item) {
+                          if (item[k] == variable) {
+                              item.values[valueKey] = table[key];
+                              break;
+                          }
+                      }
+                  })
+              }
 
+          }
 
-            for (var key in table) {
-                let variable = key.split('_').slice(1, key.split('_').length - 1).join(' ');
-                let valueKey = key.split('_')[0] + key.split('_')[key.split('_').length-1];
-
-                let datamodel = {
-                    variable: '',
-                    values: {
-                        AntalNiveau:'',
-                        AntalKom: '',
-                        PctNiveau: '',
-                        PctKom: ''
-                    }
-                }
-                
-                //check if variable already exicts
-                if (excist.indexOf(variable) === -1) {
-                    excist.push(variable);
-                    datamodel.variable = variable;
-                    datamodel.values[valueKey] = table[key];
-                    dataArr.push(datamodel);
-                } else {
-                    dataArr.forEach(function(item){
-                        for (var k in item) {
-                            if (item[k] == variable) {
-                                item.values[valueKey] = table[key];
-                                break;
-                            }
-                        }
-                    })
-                }
-
-            }
-
-            let obj = {
-                title: title,
-                data: dataArr
-            }
-            tables.push(obj);
-        }); 
+          // collect the beautified data and push to array
+          let obj = {
+              title: title,
+              desciption: desciption,
+              data: dataArr
+          }
+          tables.push(obj);
+      }); 
 
       return tables;
     },
@@ -175,7 +187,7 @@ export default {
       // All units are in the set measurement for the document
       // This can be changed to "pt" (points), "mm" (Default), "cm", "in"
       doc.fromHTML($('#report').get(0), 15, 15, {
-        'width': 170, 
+        'width': 190, 
         'elementHandlers': specialElementHandlers
       });
 
@@ -260,6 +272,7 @@ export default {
       this.map.on('draw:deleted', function() {
           // Update db to save latest changes.
           self.geometry = {};
+          self.data = {};
       });
 
     })
