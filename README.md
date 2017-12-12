@@ -1,5 +1,5 @@
 # Mit Hood
-Simpel webapp til at lave socioøkonomiske rapporter for et område som tegnes på et kort. Oplysninger i rapporten er blandt andet boligtype og -størrelse, alderfordeling, familietyper, virksomheder, statsborgerskab osv. 
+Simpel webapp til at lave socioøkonomiske rapporter for et område som tegnes på et kort. Oplysninger i rapporten er blandt andet boligtype og -størrelse, aldersfordeling, familietyper, virksomheder, statsborgerskab osv. Løsningen er afhængig af LIFA's API til [LOIS Statistik](https://www.lifa.dk/statistik-analyse/lois-statistik/).
 
 ![image](https://user-images.githubusercontent.com/7534153/33887867-88cf99d6-df4b-11e7-9773-f07d86968d1b.png)
 
