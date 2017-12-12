@@ -277,6 +277,7 @@ export default {
           // Update db to save latest changes.
           self.geometry = {};
           self.data = {};
+          self.showToc = {};
       });
 
     })
