@@ -28,7 +28,7 @@
                     <td class="col-md-4 align-middle" v-else>{{item.variable}}</td>                  
                     <td class="col-md-8">
                       <div v-for="(value,key) in item.values">
-                        <div v-if="key === 'AntalNiveau'">
+                        <div v-if="key === 'AntalNiveau' && value !== ''">
                           {{key}}: {{value}}
                         </div>
                         <div v-else-if="key === 'AntalKom' && value !== ''">
