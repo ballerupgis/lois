@@ -250,27 +250,32 @@ export default {
       this.map.addControl(drawControl);
 
       let self = this
+
+      // CRS to append to geom obj
+      let crs = {
+          "type": "name", 
+          "properties": {
+              "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+          }
+      };
+
       this.map.on('draw:created', function(e) {
+        let layer = e.layer
 
-        let type = e.layerType,
-            layer = e.layer,
-            crs = {
-                "type": "name", 
-                "properties": {
-                    "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
-                }
-            };
-
-        // get geojson and store in model
-        let shape = layer.toGeoJSON()
-        self.geometry = shape;
-        // add crs def to geojson
+        // get geojson and store in model and add crs
+        self.geometry = layer.toGeoJSON();
         self.geometry.crs = crs;
-        drawnItems.removeLayer(layer);
+
+        //drawnItems.removeLayer(layer);
         drawnItems.addLayer(layer);
       });
 
       this.map.on('draw:edited', function(e) {
+        let layers = e.layers;
+        layers.eachLayer(function (layer) {
+          self.geometry = layer.toGeoJSON();
+          self.geometry.crs = crs;
+        });
       });
 
       this.map.on('draw:deleted', function() {
@@ -279,7 +284,6 @@ export default {
           self.data = {};
           self.showToc = {};
       });
-
     })
   }
 }
