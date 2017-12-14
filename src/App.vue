@@ -90,7 +90,6 @@ export default {
           self.loading = false;
           self.showToc = true;
           self.report = response.data.Result;
-          //console.log(self.report)
           self.data = self.beutifyResponse(self.report);
         })
         .catch(function (error) {
