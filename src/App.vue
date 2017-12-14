@@ -10,50 +10,51 @@
       <a href="#" id="pdf" v-on:click="pdf" v-show="showToc">
         <i class="fa fa-file-pdf-o fa-2x bottom-right"></i>
       </a>
-        <div id="report">
-          <div class="jumbotron" v-bind:id="item.tablename" v-for="item in data" v-show="item.tablename !== 'TotalKom' && item.tablename !== 'TotalNiveau'">
-            <h1>{{item.title}}</h1>
-            <h5>{{item.desciption}}</h5>
-            <div class="col-md-12">
-              <table class="table table-striped table-sm table-hover">
-                <thead>
-                  <tr class="row">
-                    <td class="col-md-4"><strong>VARIABEL</strong></td>
-                    <td class="col-md-8"><strong>VÆRDIER</strong></td>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr class="row" v-for="item in item.data">  
-                    <td class="col-md-4" v-if="item.variable === ''">Samlet</td>
-                    <td class="col-md-4 align-middle" v-else>{{item.variable}}</td>                  
-                    <td class="col-md-8">
-                      <div v-for="(value,key) in item.values">
-                        <div v-if="key === 'AntalNiveau' && value !== ''">
-                          {{key}}: {{value}}
-                        </div>
-                        <div v-else-if="key === 'AntalKom' && value !== ''">
-                          {{key}}: {{value}}
-                        </div>                      
-                        <div class="progress" v-else-if="key === 'PctNiveau' && value !== ''">
-                          <div class="progress-bar bg-success" role="progressbar" v-bind:style="{width: value + '%'}" v-bind:aria-valuenow="value" aria-valuemin="0" aria-valuemax="100">Niveau: {{value}} %</div>
-                        </div>
-                        <div class="progress" v-else-if="key === 'PctKom' &&  value !== ''">
-                          <div class="progress-bar bg-warning" role="progressbar" v-bind:style="{width: value + '%'}" v-bind:aria-valuenow="value" aria-valuemin="0" aria-valuemax="100">Kommune: {{value}} %</div>
-                        </div>
-                        <div v-else-if="key === 'TotalKom'">
-                          {{key}}: {{value}}
-                        </div>
-                        <div v-else-if="key === 'TotalNiveau'">
-                          {{key}}: {{value}}
-                        </div>
+      <div id="report">
+        <div class="jumbotron" v-bind:id="item.tablename" v-for="item in data" v-show="item.tablename !== 'TotalKom' && item.tablename !== 'TotalNiveau'">
+          <h1>{{item.title}}</h1>
+          <h5>{{item.desciption}}</h5>
+          <p id="date">{{new Date(item.data[0].values.BeregnDatoKom).getDate() +'/'+ (Number(new Date(item.data[0].values.BeregnDatoKom).getMonth()) + 1) + '-' + new Date(item.data[0].values.BeregnDatoKom).getFullYear()}}</p>
+          <div class="col-md-12">
+            <table class="table table-striped table-sm table-hover">
+              <thead>
+                <tr class="row">
+                  <td class="col-md-4"><strong>VARIABEL</strong></td>
+                  <td class="col-md-8"><strong>VÆRDIER</strong></td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="row" v-for="item in item.data">  
+                  <td class="col-md-4" v-if="item.variable === ''">Total</td>
+                  <td class="col-md-4" id="align" v-else>{{item.variable}}</td>                  
+                  <td class="col-md-8">
+                    <div v-for="(value,key) in item.values">
+                      <div v-if="key === 'AntalNiveau' && value !== ''">
+                        <div>Niveau: {{value}}</div>
                       </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+                      <div v-else-if="key === 'AntalKom' && value !== ''">
+                        <div>Kommune: {{value}}</div>
+                      </div>                      
+                      <div class="progress" v-else-if="key === 'PctNiveau' && value !== ''">
+                        <div class="progress-bar bg-success" role="progressbar" v-bind:style="{width: value + '%'}" v-bind:aria-valuenow="value" aria-valuemin="0" aria-valuemax="100">Niveau: {{value}} %</div>
+                      </div>
+                      <div class="progress" v-else-if="key === 'PctKom' &&  value !== ''">
+                        <div class="progress-bar bg-warning" role="progressbar" v-bind:style="{width: value + '%'}" v-bind:aria-valuenow="value" aria-valuemin="0" aria-valuemax="100">Kommune: {{value}} %</div>
+                      </div>
+                      <div v-else-if="key === 'TotalKom'">
+                        <div>Kommune: {{value}}</div> 
+                      </div>
+                      <div v-else-if="key === 'TotalNiveau'">
+                        <div>Niveau: {{value}}</div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
+      </div>
     </div>
   </div> 
 </template>
@@ -84,7 +85,7 @@ export default {
     getData: function (geom) {
       this.loading = true
       let self = this;
-      axios.post('http://bal0-lois:8080/api/datapakkeresultat?procedureID=3&procedureParametre=%7B%22UdStraekID%22%3A%221%22%2C%22LS2RapportID%22%3A%223%22%7D&type=json', geom)
+      axios.post('http://bal0-lois:8080/api/datapakkeresultat?procedureID=3&geoNavn=&procedureParametre={"UdStraekID":"1","LS2RapportID":"3"}&type=json', geom)
         .then(function (response) {
           self.loading = false;
           self.showToc = true;
@@ -260,13 +261,16 @@ export default {
       };
 
       this.map.on('draw:created', function(e) {
+
         let layer = e.layer
+        
+        //remove existing drawn objects
+        drawnItems.clearLayers(layer)
 
         // get geojson and store in model and add crs
         self.geometry = layer.toGeoJSON();
         self.geometry.crs = crs;
 
-        //drawnItems.removeLayer(layer);
         drawnItems.addLayer(layer);
       });
 
@@ -282,7 +286,7 @@ export default {
           // Update db to save latest changes.
           self.geometry = {};
           self.data = {};
-          self.showToc = {};
+          self.showToc = false;
       });
     })
   }
@@ -311,8 +315,21 @@ export default {
     margin-top: 3rem;
   }
 
+  /* horrible css to virtically center aling text in td */
+  #align {
+    padding-top: 40px;
+  }
+
   .jumbotron {
     background: #f7f7f7;
+    position: relative;
+  }
+
+  #date {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    color:darkgrey;
   }
 
   .progress-bar {
