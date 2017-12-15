@@ -1,15 +1,66 @@
 <template>
   <div id="app">
-    <navbar v-bind:data="data" v-bind:showToc="showToc"></navbar>
-    <div class="container">
-      <div id="mapid"></div>
-      <button  type="button" class="btn btn-secondary btn-lg btn-block" v-on:click="createReport(geometry)">
-        <span v-show="!loading">HENT RAPPORT</span>
-        <i class="fa fa-refresh fa-spin" style="font-size:24px" v-show="loading"></i>
-      </button>
-      <a href="#" id="pdf" v-on:click="pdf" v-show="showToc">
-        <i class="fa fa-file-pdf-o fa-2x bottom-right"></i>
-      </a>
+    <nav class="navbar navbar-light bg-faded">
+      <a class="navbar-brand" href="#">MIT HOOD</a>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="col-md-8 offset-md-2">
+        <div id="mapid"></div>
+      </div>
+      <div class="col-md-8 offset-md-2">
+        <button  type="button" class="btn btn-secondary btn-lg btn-block" v-on:click="createReport(geometry)">
+          <span v-show="!loading">HENT RAPPORT</span>
+          <i class="fa fa-refresh fa-spin" style="font-size:24px" v-show="loading"></i>
+        </button>
+      </div>
+      <div class="row">
+        <div class="col-md-2" id="toc">
+          <nav id="navbar-example3" class="navbar navbar-light bg-light">
+            <nav class="nav nav-pills flex-column">
+              <a class="nav-link" href="#item-1">Tacos occupy migas meh, taxidermy man braid ethical</a>
+              <a class="nav-link" href="#item-2">Item2</a>
+              <a class="nav-link" href="#item-3">Item3</a>
+            </nav>
+          </nav>
+        </div>
+
+
+        <div data-spy="scroll" data-target="#navbar-example3" data-offset="0" class="col-md-8 offset-md-2 jumbotron">
+          <h4 id="item-1">Item 1</h4>
+          <p>Lorem ipsum dolor amet wolf selfies cliche, austin cred butcher waistcoat bespoke ennui aesthetic salvia celiac cardigan try-hard neutra. Hoodie af typewriter VHS fixie meditation tousled, hashtag lumbersexual migas glossier polaroid. Microdosing snackwave distillery twee subway tile. Aesthetic bitters slow-carb pour-over, waistcoat jianbing gastropub pabst selfies. DIY typewriter copper mug shabby chic, air plant skateboard dreamcatcher distillery cray cliche hashtag. Woke poutine gochujang farm-to-table semiotics cronut neutra hella +1 kitsch offal adaptogen blog photo booth humblebrag. Yuccie tousled dreamcatcher, everyday carry biodiesel food truck VHS farm-to-table.
+
+Skateboard subway tile hammock disrupt sartorial adaptogen. Tacos occupy migas meh, taxidermy man braid ethical venmo literally chambray woke. You probably haven't heard of them glossier tumblr chartreuse taiyaki fingerstache drinking vinegar. Chia fingerstache lumbersexual, 90's photo booth hoodie vape readymade yr sartorial before they sold out cloud bread distillery. Austin hammock PBR&B hexagon heirloom paleo four dollar toast fashion axe. Man braid bespoke small batch brunch typewriter vape shaman twee pork belly seitan. Jianbing trust fund 8-bit small batch heirloom migas actually put a bird on it master cleanse vice sriracha health goth cray.
+
+Letterpress intelligentsia four dollar toast next level put a bird on it, taxidermy trust fund roof party pop-up. Mlkshk franzen man bun, mustache pitchfork activated charcoal chia waistcoat poke normcore kinfolk cardigan cliche. Post-ironic af forage next level put a bird on it. Hot chicken microdosing letterpress kitsch quinoa air plant DIY ugh locavore thundercats dreamcatcher tbh plaid tote bag raclette. Iceland jianbing taiyaki bushwick +1, blog shaman kitsch art party sartorial pug humblebrag lyft. Marfa distillery raw denim, jianbing offal +1 kinfolk thundercats roof party vape tbh fixie. Vape schlitz chia banh mi.
+
+Subway tile waistcoat pabst humblebrag post-ironic, succulents lyft polaroid. Sartorial YOLO literally scenester ennui keytar raclette cronut yuccie mixtape polaroid retro. Af tofu mustache readymade cardigan affogato health goth. Pok pok poke palo santo, 8-bit wolf green juice flannel raclette four dollar toast. Fam single-origin coffee distillery street art, polaroid sartorial pok pok sustainable roof party master cleanse.
+
+Tumblr normcore authentic ramps live-edge selfies semiotics pitchfork stumptown cray. Franzen kombucha tattooed chambray enamel pin vaporware. Palo santo affogato scenester, umami truffaut echo park bespoke polaroid cardigan disrupt pickled try-hard offal. Affogato activated charcoal banh mi next level, lyft vexillologist put a bird on it blue bottle keffiyeh. Celiac waistcoat pitchfork master cleanse venmo affogato cold-pressed tattooed....</p>
+          <h4 id="item-2">Item 2</h4>
+          <p>Lorem ipsum dolor amet wolf selfies cliche, austin cred butcher waistcoat bespoke ennui aesthetic salvia celiac cardigan try-hard neutra. Hoodie af typewriter VHS fixie meditation tousled, hashtag lumbersexual migas glossier polaroid. Microdosing snackwave distillery twee subway tile. Aesthetic bitters slow-carb pour-over, waistcoat jianbing gastropub pabst selfies. DIY typewriter copper mug shabby chic, air plant skateboard dreamcatcher distillery cray cliche hashtag. Woke poutine gochujang farm-to-table semiotics cronut neutra hella +1 kitsch offal adaptogen blog photo booth humblebrag. Yuccie tousled dreamcatcher, everyday carry biodiesel food truck VHS farm-to-table.
+
+Skateboard subway tile hammock disrupt sartorial adaptogen. Tacos occupy migas meh, taxidermy man braid ethical venmo literally chambray woke. You probably haven't heard of them glossier tumblr chartreuse taiyaki fingerstache drinking vinegar. Chia fingerstache lumbersexual, 90's photo booth hoodie vape readymade yr sartorial before they sold out cloud bread distillery. Austin hammock PBR&B hexagon heirloom paleo four dollar toast fashion axe. Man braid bespoke small batch brunch typewriter vape shaman twee pork belly seitan. Jianbing trust fund 8-bit small batch heirloom migas actually put a bird on it master cleanse vice sriracha health goth cray.
+
+Letterpress intelligentsia four dollar toast next level put a bird on it, taxidermy trust fund roof party pop-up. Mlkshk franzen man bun, mustache pitchfork activated charcoal chia waistcoat poke normcore kinfolk cardigan cliche. Post-ironic af forage next level put a bird on it. Hot chicken microdosing letterpress kitsch quinoa air plant DIY ugh locavore thundercats dreamcatcher tbh plaid tote bag raclette. Iceland jianbing taiyaki bushwick +1, blog shaman kitsch art party sartorial pug humblebrag lyft. Marfa distillery raw denim, jianbing offal +1 kinfolk thundercats roof party vape tbh fixie. Vape schlitz chia banh mi.
+
+Subway tile waistcoat pabst humblebrag post-ironic, succulents lyft polaroid. Sartorial YOLO literally scenester ennui keytar raclette cronut yuccie mixtape polaroid retro. Af tofu mustache readymade cardigan affogato health goth. Pok pok poke palo santo, 8-bit wolf green juice flannel raclette four dollar toast. Fam single-origin coffee distillery street art, polaroid sartorial pok pok sustainable roof party master cleanse.
+
+Tumblr normcore authentic ramps live-edge selfies semiotics pitchfork stumptown cray. Franzen kombucha tattooed chambray enamel pin vaporware. Palo santo affogato scenester, umami truffaut echo park bespoke polaroid cardigan disrupt pickled try-hard offal. Affogato activated charcoal banh mi next level, lyft vexillologist put a bird on it blue bottle keffiyeh. Celiac waistcoat pitchfork master cleanse venmo affogato cold-pressed tattooed....</p>
+          <h4 id="item-3">Item 3</h4>
+          <p>Lorem ipsum dolor amet wolf selfies cliche, austin cred butcher waistcoat bespoke ennui aesthetic salvia celiac cardigan try-hard neutra. Hoodie af typewriter VHS fixie meditation tousled, hashtag lumbersexual migas glossier polaroid. Microdosing snackwave distillery twee subway tile. Aesthetic bitters slow-carb pour-over, waistcoat jianbing gastropub pabst selfies. DIY typewriter copper mug shabby chic, air plant skateboard dreamcatcher distillery cray cliche hashtag. Woke poutine gochujang farm-to-table semiotics cronut neutra hella +1 kitsch offal adaptogen blog photo booth humblebrag. Yuccie tousled dreamcatcher, everyday carry biodiesel food truck VHS farm-to-table.
+
+Skateboard subway tile hammock disrupt sartorial adaptogen. Tacos occupy migas meh, taxidermy man braid ethical venmo literally chambray woke. You probably haven't heard of them glossier tumblr chartreuse taiyaki fingerstache drinking vinegar. Chia fingerstache lumbersexual, 90's photo booth hoodie vape readymade yr sartorial before they sold out cloud bread distillery. Austin hammock PBR&B hexagon heirloom paleo four dollar toast fashion axe. Man braid bespoke small batch brunch typewriter vape shaman twee pork belly seitan. Jianbing trust fund 8-bit small batch heirloom migas actually put a bird on it master cleanse vice sriracha health goth cray.
+
+Letterpress intelligentsia four dollar toast next level put a bird on it, taxidermy trust fund roof party pop-up. Mlkshk franzen man bun, mustache pitchfork activated charcoal chia waistcoat poke normcore kinfolk cardigan cliche. Post-ironic af forage next level put a bird on it. Hot chicken microdosing letterpress kitsch quinoa air plant DIY ugh locavore thundercats dreamcatcher tbh plaid tote bag raclette. Iceland jianbing taiyaki bushwick +1, blog shaman kitsch art party sartorial pug humblebrag lyft. Marfa distillery raw denim, jianbing offal +1 kinfolk thundercats roof party vape tbh fixie. Vape schlitz chia banh mi.
+
+Subway tile waistcoat pabst humblebrag post-ironic, succulents lyft polaroid. Sartorial YOLO literally scenester ennui keytar raclette cronut yuccie mixtape polaroid retro. Af tofu mustache readymade cardigan affogato health goth. Pok pok poke palo santo, 8-bit wolf green juice flannel raclette four dollar toast. Fam single-origin coffee distillery street art, polaroid sartorial pok pok sustainable roof party master cleanse.
+
+Tumblr normcore authentic ramps live-edge selfies semiotics pitchfork stumptown cray. Franzen kombucha tattooed chambray enamel pin vaporware. Palo santo affogato scenester, umami truffaut echo park bespoke polaroid cardigan disrupt pickled try-hard offal. Affogato activated charcoal banh mi next level, lyft vexillologist put a bird on it blue bottle keffiyeh. Celiac waistcoat pitchfork master cleanse venmo affogato cold-pressed tattooed....</p>
+        </div>
+      </div>
+
+
       <div id="report">
         <div class="jumbotron" v-bind:id="item.tablename" v-for="item in data" v-show="item.tablename !== 'TotalKom' && item.tablename !== 'TotalNiveau'">
           <h1>{{item.title}}</h1>
@@ -56,6 +107,9 @@
         </div>
       </div>
     </div>
+    <a href="#" id="pdf" v-on:click="pdf" v-show="showToc">
+      <i class="fa fa-file-pdf-o fa-2x bottom-right"></i>
+    </a>
   </div> 
 </template>
 
@@ -297,12 +351,18 @@ export default {
   @import "../node_modules/leaflet-draw/dist/leaflet.draw.css";
   @import "../node_modules/font-awesome/css/font-awesome.css";
 
+  #toc {
+    position: fixed;
+    top: 200px;
+    z-index: 100;
+
+  }
+
   html, body, .btn {
     font-family: 'Quicksand', sans-serif;
   }
 
   #mapid {
-    margin-top: 55px;
     height: 500px;
   }
 
