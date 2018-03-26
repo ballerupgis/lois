@@ -16,9 +16,15 @@ I tabellen ```OversigtKolonner``` er det muligt at give et passende alias til ko
 3. Pct Etagebolig
 4. Pct Etagebolig Niveau
 
-Det afgørende for formateringen er at der står ```Pct``` og ```Antal``` som det første ord og at der står ```Niveau``` som sidste ord ud fra dem som omhandler det tegnede område. Det er vigtigt at der kun bruges mellemrum og ikke andre tegn såsom underscore, da logikken in app'en bruger mellemrum til at splitte de forskkelige ord op og opbygge rapporten. Hvad der ellers står i Alias bliver printet ud i rapporten og den vil også medtage titler med mellemrum. Herunder ses eksempel på tabellen ```OversigtKolonner``` hvor der under ```Kolonneforklaring``` skal det korrekte alias.
+Det afgørende for formateringen er at der står ```Pct``` og ```Antal``` som det første ord og at der står ```Niveau``` som sidste ord ud fra dem som omhandler det tegnede område. Det er vigtigt at der kun bruges mellemrum og ikke andre tegn såsom underscore, da logikken in app'en bruger mellemrum til at splitte de forskkelige ord op og opbygge rapporten. Hvad der ellers står i Alias bliver printet ud i rapporten og den vil også medtage titler med mellemrum. Herunder ses eksempel på tabellen ```OversigtKolonner``` hvor der under ```Kolonneforklaring``` skal stå det korrekte alias.
 
 ![image](https://user-images.githubusercontent.com/7534153/37901443-8625c0c8-30f1-11e8-9e3c-a7f0b058e3ab.png)
+
+Der kan ligeledes angives flot titel og forklarende tekst til de forskellige oversigter i tabellen ```OversigtProcedureTabel```. Titel angives i kolonnen ```LangtNavn``` mens beskrivelsen angives i ```Notat```. 
+
+![image](https://user-images.githubusercontent.com/7534153/37902099-a66f8fb0-30f3-11e8-8f2f-14cde657de17.png)
+
+Som det er lige nu kræver løsningen ikke login så længe man er indenfor firewall og kan tilgå API'et. App'en kunne udbygges til at understøtte NTLM authorization så der køres på organistionens windowsbrugerstyring.
 
 ## Build Setup
 
